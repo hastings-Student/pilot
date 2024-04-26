@@ -1,0 +1,55 @@
+<html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous"></script>
+</head>
+
+<body>
+<script>
+jsonData = '[["Course","Class","Section","Days & Times","Room","Instructor"],["CS 135 - Computer Science I","24254","1001-LEC","TuTh 12:00PM - 1:15PM","SEM 101","Erin Keith"],["CS 135 - Computer Science I","24255","1101-LAB","Mo 8:00AM - 8:50AM","WPEB 100","Erin Keith"],["CS 202 - Computer Science II","24257","1001-LEC","TuTh 12:00PM - 1:15PM","DMSC 110","Bashira Akter Anima"],["CS 202 - Computer Science II","24259","1102-LAB","We 9:00AM - 9:50AM","WPEB 100","Bashira Akter Anima"]]'
+
+$(init)
+
+function init() { if (prompt("at init; Continue?","Yes")==null) return;
+  data = $.parseJSON(jsonData); //console.log(data)
+
+  $("th").each((ic, el) => {if (ic>0) el.width=100;}); // adjust width
+  $("tr").each((ir, el) => {if (ir>0) {$("td", el).each((ic, el) => el.align="RIGHT"); return false}});  // right-align only row 2 indexes
+  $("tr").each((ir,el) => {if (ir>=2) {for(ic=1; ic<=7; ic++) el.append(document.createElement("td"));}}); // fill entire array with <td>s
+  $("tr").each((ir, el) => {Hr = el.innerText.replace(":","").trim(); if (ir>=2) {$("td", el).each((ic, el) => {if (ic>0) $(el).attr("Id", Hr+ic)})}}); // estb all <td> Ids
+  load();   
+}
+
+function load() { if (prompt("at load; Continue?","Yes")==null) return;
+  const dow = ["","Su","Mo","Tu","We","Th","Fr","Sa"];
+  for (var n=1; n<data.length; n++) {  // each record
+    var crs = data[n][0]; //alert(crs)
+    var sec = data[n][2]; //alert(sec)
+    var dtm = data[n][3]; //alert(dtm)
+    var i = dtm.indexOf(" "), i1 = dtm.indexOf(":");  // fixed textmarks
+//console.log(n+": "+i+","+i1)
+    for (var ic=1; ic<=7; ic++) {
+      if (dtm.indexOf(dow[ic])>=0) {
+        var id = dtm.slice(i+1,i1+4).replace(":","")+ic; //console.log(id)
+        var t = document.getElementById(id).innerText;
+        t += (t.length?"\n":"")+crs.slice(0,7)+sec.slice(-3); // newline if not first
+        document.getElementById(id).innerText = t;
+      }
+    }
+  //break;
+  }
+  $("td").each((ix, el) => {if(el.innerText.indexOf("LAB")>0) $(el).css("backgroundColor","#ccf")});
+}
+</script>
+<table border=1>
+  <tr><th>Hour</th><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>
+  <tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+  <tr><td>8:00A</td></tr>
+  <tr><td>9:00A</td></tr>
+  <tr><td>10:00A</td></tr>
+  <tr><td>11:00A</td></tr>
+  <tr><td>12:00P</td></tr>
+</table></body>
+</html>
